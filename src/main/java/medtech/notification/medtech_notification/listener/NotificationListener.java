@@ -1,6 +1,5 @@
 package medtech.notification.medtech_notification.listener;
 
-import lombok.RequiredArgsConstructor;
 import medtech.notification.medtech_notification.configuration.RabbitMQConfig;
 import medtech.notification.medtech_notification.dto.ConsultaAgendadaDTO;
 import medtech.notification.medtech_notification.dto.ConsultaCanceladaDTO;
@@ -12,11 +11,16 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
 @Component
-@RequiredArgsConstructor
 public class NotificationListener {
     private final EmailService emailService;
     private final PacienteService pacienteService;
     private final MedicoService medicoService;
+
+    public NotificationListener(EmailService emailService, PacienteService pacienteService, MedicoService medicoService) {
+        this.emailService = emailService;
+        this.pacienteService = pacienteService;
+        this.medicoService = medicoService;
+    }
 
     @RabbitListener(queues = RabbitMQConfig.QUEUE_AGENDADA)
     public void processarMensagem(ConsultaAgendadaDTO mensagem) {

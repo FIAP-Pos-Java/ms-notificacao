@@ -1,17 +1,33 @@
-version: '3.8'
-
 services:
   rabbitmq:
     image: rabbitmq:3-management
     container_name: rabbitmq
     ports:
-      - "5672:5672"     # comunicação com o app
-      - "15672:15672"   # painel web
+      - "5672:5672"
+      - "15672:15672"
     environment:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
     networks:
       - medtech-net
+
+  mysql:
+    image: mysql:8.4
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: medtech
+    ports:
+      - "3306:3307"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - medtech-net
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   notification:
     build: .
@@ -25,31 +41,24 @@ services:
       SPRING_RABBITMQ_PASSWORD: guest
       SPRING_MAIL_HOST: smtp.gmail.com
       SPRING_MAIL_PORT: 587
-      SPRING_MAIL_USERNAME: eduardaclx@gmail.com
-      SPRING_MAIL_PASSWORD: mdibsculpbvahypp
+      SPRING_MAIL_USERNAME: medtech.notification@gmail.com
+      SPRING_MAIL_PASSWORD: uymtryuvlzrtcqxw
       SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH: "true"
       SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE: "true"
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/medtech
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
     depends_on:
-      - rabbitmq
-      - mysql
-    networks:
-      - medtech-net
-
-  mysql:
-    image: mysql:8.0
-    container_name: mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: medtech_db
-      MYSQL_USER: medtech_user
-      MYSQL_PASSWORD: medtech_password
-    ports:
-      - "3306:3306"
-    volumes:
-      - mysql-data:/var/lib/mysql
+      mysql:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_started
     networks:
       - medtech-net
 
 networks:
   medtech-net:
     driver: bridge
+
+volumes:
+  mysql_data:
