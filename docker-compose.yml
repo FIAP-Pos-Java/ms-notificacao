@@ -31,6 +31,22 @@ services:
       SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE: "true"
     depends_on:
       - rabbitmq
+      - mysql
+    networks:
+      - medtech-net
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: medtech_db
+      MYSQL_USER: medtech_user
+      MYSQL_PASSWORD: medtech_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
     networks:
       - medtech-net
 

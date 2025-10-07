@@ -1,12 +1,10 @@
 package medtech.notification.medtech_notification.dto;
 
+import java.time.LocalDateTime;
+
 public record ConsultaAgendadaDTO(
-    Long consultaId,
-    Long pacienteId,
-    Long medicoId,
-    String medicoNome,
-    String especialidade,
-    String nomePaciente,
-    String emailPaciente
+    String pacienteId,
+    String medicoId,
+    LocalDateTime dataHora
 ) {
 }
