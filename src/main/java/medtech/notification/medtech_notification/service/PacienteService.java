@@ -25,7 +25,7 @@ public class PacienteService {
         System.out.println("Buscando paciente com ID: " + id);
         var buscarPaciente = this.pacienteRepository.findById(id).orElseThrow(() -> new UsuarioNaoEncontradoException(MESSAGE_PACIENTE_NAO_ENCONTRADO));
 
-        System.out.println("Paciente encontrado:" + buscarPaciente.getEmail() + " - " + buscarPaciente.getNome());
+        System.out.println("Paciente encontrado:" + buscarPaciente.getLogin().getEmail() + " - " + buscarPaciente.getNome());
 
         return this.pacienteMapper.toMostrarPacienteDTO(buscarPaciente);
     }

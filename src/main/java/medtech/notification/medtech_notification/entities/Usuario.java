@@ -16,11 +16,14 @@ public abstract class Usuario {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     private String nome;
-    private String email;
     private LocalDate dataNascimento;
     private LocalDateTime dataCadastro;
     private String telefone;
     private boolean enabled;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "id_login")
+    private Login login;
 
     public UUID getId() {
         return id;
@@ -34,12 +37,6 @@ public abstract class Usuario {
     }
     public void setNome(String nome) {
         this.nome = nome;
-    }
-    public String getEmail() {
-        return email;
-    }
-    public void setEmail(String email) {
-        this.email = email;
     }
     public LocalDate getDataNascimento() {
         return dataNascimento;
@@ -64,5 +61,11 @@ public abstract class Usuario {
     }
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+    public Login getLogin() {
+        return login;
+    }
+    public void setLogin(Login login) {
+        this.login = login;
     }
 }

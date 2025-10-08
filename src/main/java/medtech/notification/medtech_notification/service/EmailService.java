@@ -59,7 +59,7 @@ public class EmailService {
                     medico.getNome(),
                     medico.getEspecialidade());
 
-            enviarEmail(paciente.getEmail(), assunto, texto);
+            enviarEmail(paciente.getLogin().getEmail(), assunto, texto);
         }
     }
 }

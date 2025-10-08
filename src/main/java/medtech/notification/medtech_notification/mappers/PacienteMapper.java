@@ -15,7 +15,7 @@ public class PacienteMapper {
         return new PacienteDTO(
                 paciente.getId(),
                 paciente.getNome(),
-                paciente.getEmail(),
+                paciente.getLogin().getEmail(),
                 paciente.getDataNascimento(),
                 paciente.getDataCadastro(),
                 paciente.getTelefone(),
