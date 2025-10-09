@@ -20,8 +20,7 @@ public class MedicoService {
 
     private final String MESSAGE_MEDICO_NAO_ENCONTRADO = "Médico não encontrado";
 
-    public MedicoDTO buscarMedicoPorId(String idStr){
-        UUID id = UUID.fromString(idStr);
+    public MedicoDTO buscarMedicoPorId(UUID id){
         var buscarMedico = this.medicoRepository.findById(id).orElseThrow(() -> new UsuarioNaoEncontradoException(MESSAGE_MEDICO_NAO_ENCONTRADO));
 
         return this.medicoMapper.toMostrarMedicoDTO(buscarMedico);

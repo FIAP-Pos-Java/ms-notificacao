@@ -14,12 +14,10 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitMQConfig {
     public static final String EXCHANGE = "consulta.exchange";
 
-    public static final String QUEUE_AGENDADA = "consulta.agendada.queue";
-    public static final String QUEUE_ALTERADA = "consulta.alterada.queue";
-    public static final String QUEUE_CANCELADA = "consulta.cancelada.queue";
+    public static final String QUEUE_AGENDADA = "consulta.notificacao.agendada.queue";
+    public static final String QUEUE_CANCELADA = "consulta.notificacao.cancelada.queue";
 
     public static final String ROUTING_KEY_AGENDADA = "consulta.agendada";
-    public static final String ROUTING_KEY_ALTERADA = "consulta.alterada";
     public static final String ROUTING_KEY_CANCELADA = "consulta.cancelada";
 
     @Bean
@@ -33,11 +31,6 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public Queue alteradaQueue() {
-        return new Queue(QUEUE_ALTERADA, true);
-    }
-
-    @Bean
     public Queue canceladaQueue() {
         return new Queue(QUEUE_CANCELADA, true);
     }
@@ -47,13 +40,6 @@ public class RabbitMQConfig {
         return BindingBuilder.bind(agendadaQueue)
                 .to(directExchange)
                 .with(ROUTING_KEY_AGENDADA);
-    }
-
-    @Bean
-    public Binding bindingAlterada(Queue alteradaQueue, DirectExchange directExchange) {
-        return BindingBuilder.bind(alteradaQueue)
-                .to(directExchange)
-                .with(ROUTING_KEY_ALTERADA);
     }
 
     @Bean

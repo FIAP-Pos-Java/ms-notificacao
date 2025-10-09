@@ -18,10 +18,6 @@ public class NotificacaoService {
         rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE, RabbitMQConfig.ROUTING_KEY_AGENDADA, message);
     }
 
-    public void enviarNotificacaoConsultaAlterada(ConsultaAgendadaDTO message) {
-        rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE, RabbitMQConfig.ROUTING_KEY_ALTERADA, message);
-    }
-
     public void enviarNotificacaoConsultaCancelada(ConsultaAgendadaDTO message) {
         rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE, RabbitMQConfig.ROUTING_KEY_CANCELADA, message);
     }

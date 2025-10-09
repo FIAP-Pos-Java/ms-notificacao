@@ -41,8 +41,9 @@ public class EmailService {
         mailSender.send(message);
     }
 
-    // envia as notificações diariamente às 10h, sobre as consultas do dia seguinte
-    @Scheduled(cron = "0 0 10 * * *")
+    // envia as notificações diariamente às 10h, sobre as consultas do dia seguinte, para fins de teste deixei 5 minutos
+    //@Scheduled(cron = "0 0 10 * * *")
+    @Scheduled(cron = "0 */5 * * * *")
     public void enviarLembretes() {
         LocalDateTime agora = LocalDateTime.now();
         LocalDateTime daquiUmDia = agora.plusDays(1);

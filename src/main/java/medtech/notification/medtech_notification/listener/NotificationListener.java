@@ -3,7 +3,7 @@ package medtech.notification.medtech_notification.listener;
 import medtech.notification.medtech_notification.configuration.RabbitMQConfig;
 import medtech.notification.medtech_notification.dto.ConsultaAgendadaDTO;
 import medtech.notification.medtech_notification.dto.ConsultaCanceladaDTO;
-import medtech.notification.medtech_notification.dto.ConsultaAlteradaDTO;
+import medtech.notification.medtech_notification.enums.StatusDaConsulta;
 import medtech.notification.medtech_notification.service.EmailService;
 import medtech.notification.medtech_notification.service.MedicoService;
 import medtech.notification.medtech_notification.service.PacienteService;
@@ -23,43 +23,33 @@ public class NotificationListener {
     }
 
     @RabbitListener(queues = RabbitMQConfig.QUEUE_AGENDADA)
-    public void processarMensagem(ConsultaAgendadaDTO mensagem) {
-        System.out.println("Recebida mensagem de consulta agendada: " + mensagem);
+    public void processarMensagem(ConsultaAgendadaDTO dto) {
+        System.out.println("Recebida mensagem de consulta agendada: " + dto);
 
-        var paciente = pacienteService.buscarPacientePorId(mensagem.pacienteId());
-        var medico = medicoService.buscarMedicoPorId(mensagem.medicoId());
+        var paciente = pacienteService.buscarPacientePorId(dto.pacienteId());
+        var medico = medicoService.buscarMedicoPorId(dto.medicoId());
 
-        String assunto = "Lembrete de Consulta - MedTech";
-        String corpo = String.format(
-                "Olá %s, sua consulta está marcada com o Dr(a). %s (%s).",
-                paciente.nome(),
-                medico.nome(),
-                medico.especialidade()
-        );
+        String assunto = "";
+        String corpo = "";
 
-        emailService.enviarEmail(
-                paciente.email(),
-                assunto,
-                corpo
-        );
-
-        System.out.println("E-mail enviado para " + paciente.email());
-    }
-
-    @RabbitListener(queues = RabbitMQConfig.QUEUE_ALTERADA)
-    public void processarMensagemAlterada(ConsultaAlteradaDTO mensagem) {
-        System.out.println("Recebida mensagem de consulta alterada: " + mensagem);
-
-        var paciente = pacienteService.buscarPacientePorId(mensagem.pacienteId());
-        var medico = medicoService.buscarMedicoPorId(mensagem.medicoId());
-
-        String assunto = "Atualização de Consulta - MedTech";
-        String corpo = String.format(
-                "Olá %s, sua consulta com o Dr(a). %s (%s) foi alterada. Por favor, verifique os novos detalhes.",
-                paciente.nome(),
-                medico.nome(),
-                medico.especialidade()
-        );
+        if (dto.status() == StatusDaConsulta.AGENDADA) {
+            assunto = "Lembrete de Consulta - MedTech";
+            corpo = String.format(
+                    "Olá %s, sua consulta está marcada com o Dr(a). %s (%s).",
+                    paciente.nome(),
+                    medico.nome(),
+                    medico.especialidade()
+            );
+        }
+        else if (dto.status() == StatusDaConsulta.EDITADA) {
+            assunto = "Alteração de Consulta - MedTech";
+            corpo = String.format(
+                    "Olá %s, sua consulta com o Dr(a). %s (%s) foi alterada. Por favor, verifique os novos detalhes.",
+                    paciente.nome(),
+                    medico.nome(),
+                    medico.especialidade()
+            );
+        }
 
         emailService.enviarEmail(
                 paciente.email(),
@@ -71,11 +61,11 @@ public class NotificationListener {
     }
 
     @RabbitListener(queues = RabbitMQConfig.QUEUE_CANCELADA)
-    public void processarMensagemCancelada(ConsultaCanceladaDTO mensagem) {
-        System.out.println("Recebida mensagem de consulta cancelada: " + mensagem);
+    public void processarMensagemCancelada(ConsultaCanceladaDTO dto) {
+        System.out.println("Recebida mensagem de consulta cancelada: " + dto);
 
-        var paciente = pacienteService.buscarPacientePorId(mensagem.pacienteId());
-        var medico = medicoService.buscarMedicoPorId(mensagem.medicoId());
+        var paciente = pacienteService.buscarPacientePorId(dto.pacienteId());
+        var medico = medicoService.buscarMedicoPorId(dto.medicoId());
 
         String assunto = "Cancelamento de Consulta - MedTech";
         String corpo = String.format(

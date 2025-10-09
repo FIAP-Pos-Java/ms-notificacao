@@ -20,8 +20,7 @@ public class PacienteService {
 
     private final String MESSAGE_PACIENTE_NAO_ENCONTRADO = "Paciente não encontrado";
 
-    public PacienteDTO buscarPacientePorId(String idStr){
-        UUID id = UUID.fromString(idStr);
+    public PacienteDTO buscarPacientePorId(UUID id){
         System.out.println("Buscando paciente com ID: " + id);
         var buscarPaciente = this.pacienteRepository.findById(id).orElseThrow(() -> new UsuarioNaoEncontradoException(MESSAGE_PACIENTE_NAO_ENCONTRADO));
 

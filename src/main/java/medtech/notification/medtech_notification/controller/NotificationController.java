@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/notifications")
+@RequestMapping("/test-notifications")
 
 public class NotificationController {
     private final NotificacaoService notificacaoService;
@@ -23,13 +23,6 @@ public class NotificationController {
         System.out.println("Recebida requisição para notificar consulta agendada: " + consultaAgendadaDTO);
         notificacaoService.enviarNotificacaoConsultaAgendada(consultaAgendadaDTO);
         return ResponseEntity.ok("Notificação de consulta agendada enviada com sucesso.");
-    }
-
-    //agora do editada e cancelada
-    @PostMapping("/consulta-alterada")
-    public ResponseEntity<String> notificarConsultaAlterada(@RequestBody ConsultaAgendadaDTO consultaAgendadaDTO) {
-        notificacaoService.enviarNotificacaoConsultaAlterada(consultaAgendadaDTO);
-        return ResponseEntity.ok("Notificação de consulta alterada enviada com sucesso.");
     }
 
     @PostMapping("/consulta-cancelada")
