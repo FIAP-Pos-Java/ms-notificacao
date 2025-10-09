@@ -17,8 +17,8 @@ public class RabbitMQConfig {
     public static final String QUEUE_AGENDADA = "consulta.notificacao.agendada.queue";
     public static final String QUEUE_CANCELADA = "consulta.notificacao.cancelada.queue";
 
-    public static final String ROUTING_KEY_AGENDADA = "consulta.agendada";
-    public static final String ROUTING_KEY_CANCELADA = "consulta.cancelada";
+    public static final String ROUTING_KEY_AGENDADA = "consulta.notificacao.agendada";
+    public static final String ROUTING_KEY_CANCELADA = "consulta.notificacao.cancelada";
 
     @Bean
     public DirectExchange directExchange() {
