@@ -1,9 +1,6 @@
 package medtech.notification.medtech_notification.configuration;
 
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.DirectExchange;
-import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
@@ -12,17 +9,20 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RabbitMQConfig {
-    public static final String EXCHANGE = "consultas.exchange";
+    public static final String EXCHANGE_AGENDAMENTO = "agendamento.exchange";
+    public static final String EXCHANGE_CANCELAMENTO = "cancelamento.exchange";
 
     public static final String QUEUE_AGENDADA = "consulta.notificacao.agendada.queue";
     public static final String QUEUE_CANCELADA = "consulta.notificacao.cancelada.queue";
 
-    public static final String ROUTING_KEY_AGENDADA = "consulta.notificacao.agendada";
-    public static final String ROUTING_KEY_CANCELADA = "consulta.notificacao.cancelada";
+    @Bean
+    public FanoutExchange agendamentosExchange() {
+        return new FanoutExchange(EXCHANGE_AGENDAMENTO);
+    }
 
     @Bean
-    public DirectExchange directExchange() {
-        return new DirectExchange(EXCHANGE);
+    public FanoutExchange cancelamentosExchange() {
+        return new FanoutExchange(EXCHANGE_CANCELAMENTO);
     }
 
     @Bean
@@ -36,17 +36,13 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public Binding bindingAgendada(Queue agendadaQueue, DirectExchange directExchange) {
-        return BindingBuilder.bind(agendadaQueue)
-                .to(directExchange)
-                .with(ROUTING_KEY_AGENDADA);
+    public Binding bindingAgendada(Queue agendadaQueue, FanoutExchange agendamentosExchange) {
+        return BindingBuilder.bind(agendadaQueue).to(agendamentosExchange);
     }
 
     @Bean
-    public Binding bindingCancelada(Queue canceladaQueue, DirectExchange directExchange) {
-        return BindingBuilder.bind(canceladaQueue)
-                .to(directExchange)
-                .with(ROUTING_KEY_CANCELADA);
+    public Binding bindingCancelada(Queue canceladaQueue, FanoutExchange cancelamentosExchange) {
+        return BindingBuilder.bind(canceladaQueue).to(cancelamentosExchange);
     }
 
     @Bean
